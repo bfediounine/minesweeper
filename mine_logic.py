@@ -1,35 +1,30 @@
 import sys
-import range
+import random
+
+def bomb_num(x, y):
+    return int(x * y / 5)
 
 class Field:
-    def __init__(self, **kwargs):
-        if len(kwargs) != 2:
-            print("Improper initializer")
-        else: 
-            try: 
-                self._x = kwargs[x]
-                self._y = kwargs[y]
-            except:
-                e = sys.exc_info()[0]
-                write_to_page("<p>Error: %s</p>" %e)
-            self.field = [[0 for w in range(self._x)] for h in range(self._y)]
-            gen_objs()
+    def __init__(self, x, y):
+        self._y, self._x = x, y
+        self.field = [[0 for x in range(self._x)] for y in range(self._y)]
+        self.gen_objs()
 
     def gen_objs(self):
-        gen_bombs()
-        gen_nums()
+        self.gen_bombs()
+        self.gen_nums()
 
     def gen_bombs(self):
-        bomb_num = (self.x * self.y) / 5
+        _bomb_num = bomb_num(self._x, self._y)
         # -1 for bombs
-        for i in range(bomb_num):             
-            self.field[random.randint(0, self._x)][random.randint(0, self._y)] = -1
+        for i in range(_bomb_num):             
+            self.field[random.randint(0, self._x - 1)][random.randint(0, self._y - 1)] = -1
 
     def gen_nums(self):
         for x in range(self._x):
             for y in range(self._y):
                 if self.field[x][y] != -1:
-                    self.field[x][y] = sum_bombs(i, j) 
+                    self.field[x][y] = self.sum_bombs(x, y) 
 
     def sum_bombs(self, x, y):
         sum = 0
@@ -38,17 +33,19 @@ class Field:
         if x != self._x - 1: sum = sum + int(self.field[x + 1][y] == -1)
         if y != self._y - 1: sum = sum + int(self.field[x][y + 1] == -1)
         if x != 0 and y != 0: sum = sum + int(self.field[x - 1][y - 1] == -1)
-        if x != 0 and y != self._y: sum = sum + int(self.field[x - 1][y + 1] == -1)
-        if x != self._x and y != 0: sum = sum + int(self.field[x + 1][y - 1] == -1)
-        if x != self._x and y != self._y: sum = sum + int(self.field[x + 1][y + 1] == -1)
+        if x != 0 and y != self._y - 1: sum = sum + int(self.field[x - 1][y + 1] == -1)
+        if x != self._x - 1 and y != 0: sum = sum + int(self.field[x + 1][y - 1] == -1)
+        if x != self._x - 1 and y != self._y - 1: sum = sum + int(self.field[x + 1][y + 1] == -1)
         return sum
 
 class Minesweeper:
-    def start_game(*args, **kwargs):
-        self._x, self._y = kwargs['x'], kwargs['y']
-        uncovered = [2] # format: squares, mines
-    
-        field = Minesweeper(x=self._x, y=self._y)
+    def __init__(self, x, y):
+        self._x, self._y = x, y
+
+    def start_game(self):
+        self.uncovered = [0, 0] # format: squares, mines
+        self.uncovered_field = [[0 for x in range(self._x)] for y in range(self._y)]
+        self.field = Field(self._x, self._y)
     
     def handle_click(e):
         pass
