@@ -21,18 +21,22 @@ def play_game(*args, **kwargs):
 
     # display_field = [[0 for x in range(_x)] for y in range(_y)]
     display_field = list()
+    col_width, h_space, v_space = 10, 1, 1
+
     print(len(display_field))
-    for x in range(_x - 1):
-        for y in range(_y - 1):
+    for x in range(0, _x):
+        for y in range(0, _y):
             try:
-                display_field.append(urwid.AttrMap(urwid.Text(('font', str(mine.field.field[x][y])), align='center'), 'grid'))
+                display_field.append(urwid.AttrMap(urwid.Button(('font', str(mine.field.field[x][y])), on_press=handle_click), 'grid'))
             except IndexError as e:
                 print(str(e) + '; x=' + str(x) + ', y=' + str(y))
                 return
 
     print(str(type(display_field)) + ";; length: " + str(len(display_field)))
-    grid = urwid.AttrMap(urwid.GridFlow(cells=display_field, cell_width=3, h_sep=1, v_sep=1, align='center'), 'bg')
-    loop = urwid.MainLoop(widget=urwid.Filler(grid), palette=palette, handle_mouse=True, unhandled_input=exit_on_q)
+    grid = urwid.GridFlow(cells=display_field, cell_width=5, h_sep=1, v_sep=1, align='center')
+    loop = urwid.MainLoop(widget=urwid.Filler(urwid.Padding(urwid.AttrMap(grid, 'bg'), 
+        left=int((col_width + 9 * (col_width + h_space)) / 2), right=int((col_width + 9 * (col_width + h_space)) / 2))),
+            palette=palette, handle_mouse=True, unhandled_input=exit_on_q)
     loop.screen.set_mouse_tracking(enable=True)
     loop.screen.set_terminal_properties(colors=256) # highcolor
     try:
@@ -45,7 +49,13 @@ def exit_on_q(e):
         raise urwid.ExitMainLoop()
 
 def handle_click(e):
-    if len(e) == 4: # tuple corresponding to mouse input
+    value = int(e.get_label())
+    if value == -1:
+        print('')
+        raise urwid.ExitMainLoop()
+    elif value == 0:
+        pass
+    else:
         pass
 
 def draw_field():
