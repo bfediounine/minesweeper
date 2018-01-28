@@ -1,6 +1,7 @@
 import sys
 import random
 
+# @staticmethod
 def bomb_num(x, y):
     return int(x * y / 5)
 
@@ -43,7 +44,7 @@ class Minesweeper:
         self._x, self._y = x, y
 
     def start_game(self):
-        self.uncovered = [0, 0] # format: squares, mines
+        self.uncovered = 0 #squares uncovered
         self.uncovered_field = [[0 for x in range(self._x)] for y in range(self._y)]
         self.field = Field(self._x, self._y)
     
